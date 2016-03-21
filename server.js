@@ -99,9 +99,8 @@ var getAllCoords = function(req,res,next){
   });
 }
 
-  // _id: db.ObjectId(req.params.location)
-  //50.716135,-1.986723
-//get locations near a given location
+  //50.716135,-1.986723 works
+//get locations within a 5000m radius, near a given location
 var getCoordsNear = function(req,res,next){
 
 var longitude = parseFloat(req.params.long)
@@ -113,7 +112,7 @@ var latitude = parseFloat(req.params.lat)
         $geometry : {
           coordinates : [longitude,latitude]
         },
-        $maxDistance : 8000
+        $maxDistance : 5000
       }
     }
   }).exec(function (arr,data) {
@@ -122,17 +121,54 @@ var latitude = parseFloat(req.params.lat)
   });
 }
 
+//get one location
+var getOneLocationById = function(req,res,next){
 
+  Location.findOne( {_id: req.params.id}).exec(function (arr,data) {
+    console.log('The returned location: ', data );
+    res.send(JSON.stringify(data));
+  });
 
+}
+
+//upvote or downvote a location
+var voteOnLocationSafety = function(req,res,next){
+  console.log(req.params.objectid)
+  console.log(req.params.vote);
+    Location.findOne({_id: req.params.objectid}, function(err, data){
+
+      console.log(JSON.stringify(data));
+
+      if (req.params.vote == "yes"){
+        data.safe_count += 1
+        data.save(function(err){
+          if (err) console.log(err);
+          else console.log('updated : ', data );
+          res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify(data));
+        })
+      }
+      else if(req.params.vote == "no"){
+        data.unsafe_count += 1
+        data.save(function(err){
+          if (err) console.log(err);
+          else console.log('updated : ', data );
+          res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify(data));
+        })
+      }
+      else if(req.params.vote != "no" || req.params.vote !="yes"){
+        res.writeHead(406, {'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(data));
+      }
+      else{
+        console.log(err);
+      }
+    })
+}
 
 server.post('/addCoord', postCoord);
 server.get('/getAllCoords',getAllCoords);
 server.get('/getCoordsNear/:long/:lat',getCoordsNear);
-
-
-// var databaseConfig = require('./config/database')(server, db);
-// var manageCoords = require('./coordinates/manageCoords')(server, db);
-
-
-//TODO get coordiantes within a radius using https://github.com/robert52/simple-geolocation/blob/master/controller.js
-//http://blog.robertonodi.me/how-to-use-geospatial-indexing-in-mongodb-using-express-and-mongoose/
+server.get('/find/:id',getOneLocationById);
+server.put('/vote/:objectid/:vote', voteOnLocationSafety)
