@@ -167,8 +167,8 @@ var voteOnLocationSafety = function(req,res,next){
     })
 }
 
-server.post('/addCoord', postCoord);
-server.get('/getAllCoords',getAllCoords);
-server.get('/getCoordsNear/:long/:lat',getCoordsNear);
-server.get('/find/:id',getOneLocationById);
-server.put('/vote/:objectid/:vote', voteOnLocationSafety)
+server.post('/api/v1/addCoord', postCoord);
+server.get('/api/v1/getAllCoords',getAllCoords);
+server.get('/api/v1/getCoordsNear/:long/:lat',getCoordsNear);
+server.get('/api/v1/find/:id',getOneLocationById);
+server.put('/api/v1/vote/:objectid/:vote', voteOnLocationSafety)
