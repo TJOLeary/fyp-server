@@ -1,0 +1,19 @@
+{
+  "name": "map-messaging-server",
+  "version": "1.0.0",
+  "description": "API to store and process coordinates for google maps",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies" : {
+        "express"    : "~4.7.2",
+        "mongoose"   : "~4.1.0",
+        "morgan"     : "~1.2.2",
+        "body-parser": "~1.5.2",
+         "restify": "^2.7.0",
+        "method-override": "~2.1.2"
+    },
+  "author": "TOL",
+  "license": "ISC"
+}
