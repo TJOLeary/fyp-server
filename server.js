@@ -100,13 +100,18 @@ var getAllCoords = function(req,res,next){
 }
 
   // _id: db.ObjectId(req.params.location)
+  //50.716135,-1.986723
 //get locations near a given location
 var getCoordsNear = function(req,res,next){
+
+var longitude = parseFloat(req.params.long)
+var latitude = parseFloat(req.params.lat)
+
   Location.find({
     location: {
       $near : {
         $geometry : {
-          coordinates : [50.716135, -1.986723]
+          coordinates : [longitude,latitude]
         },
         $maxDistance : 8000
       }
@@ -122,7 +127,7 @@ var getCoordsNear = function(req,res,next){
 
 server.post('/addCoord', postCoord);
 server.get('/getAllCoords',getAllCoords);
-server.get('/getCoordsNear',getCoordsNear);
+server.get('/getCoordsNear/:long/:lat',getCoordsNear);
 
 
 // var databaseConfig = require('./config/database')(server, db);
