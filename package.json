@@ -1,7 +1,7 @@
 {
   "name": "map-messaging-server",
   "version": "1.0.0",
-  "description": "API to store and process coordinates for google maps",
+  "description": "API to store and process coordinates",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

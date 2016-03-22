@@ -3,13 +3,11 @@
 // Server config
 // ###################
 // ###################
-
 var restify = require('restify');
 var mongoose = require('mongoose');
 var morgan = require('morgan');
 
 var server = restify.createServer();
-
 //init restify and enable logging (morgan)
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
@@ -35,7 +33,8 @@ server.listen(process.env.PORT || 8080, function() {
 // ###################
 // ###################
 
-mongoose.connect('mongodb://localhost/CoordDB');
+// mongoose.connect('mongodb://localhost/CoordDB');
+mongoose.connect('CONNECTION STRING change via putty');
 var db = mongoose.connection;
 db.on('error', function (err) {
 console.log('connection error', err);
@@ -44,6 +43,7 @@ db.once('open', function () {
 console.log('connected.');
 });
 
+//Create a new schema
 var Schema = mongoose.Schema;
 var coordSchema = new Schema({
 uuid : String,
@@ -99,20 +99,20 @@ var getAllCoords = function(req,res,next){
   });
 }
 
-  //50.716135,-1.986723 works
+  //50.716135,-1.986723 works on local
 //get locations within a 5000m radius, near a given location
 var getCoordsNear = function(req,res,next){
 
 var longitude = parseFloat(req.params.long)
 var latitude = parseFloat(req.params.lat)
-
+var distance = parseInt(req.params.distance);
   Location.find({
     location: {
       $near : {
         $geometry : {
           coordinates : [longitude,latitude]
         },
-        $maxDistance : 5000
+        $maxDistance : distance
       }
     }
   }).exec(function (arr,data) {
@@ -169,6 +169,6 @@ var voteOnLocationSafety = function(req,res,next){
 
 server.post('/api/v1/addCoord', postCoord);
 server.get('/api/v1/getAllCoords',getAllCoords);
-server.get('/api/v1/getCoordsNear/:long/:lat',getCoordsNear);
+server.get('/api/v1/getCoordsNear/:long/:lat/:distance',getCoordsNear);
 server.get('/api/v1/find/:id',getOneLocationById);
 server.put('/api/v1/vote/:objectid/:vote', voteOnLocationSafety)
